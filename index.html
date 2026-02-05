@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres ser mi San Valentín? ❤️</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffeef2;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 { color: #d63384; font-size: 2rem; }
+
+        .container { position: relative; width: 100%; max-width: 400px; height: 300px; }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 10px;
+        }
+
+        #btn-si { background-color: #ff4d6d; color: white; }
+
+        #btn-no {
+            background-color: #6c757d;
+            color: white;
+            position: absolute;
+        }
+
+        .img-valentine { width: 200px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ4ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26hpKzvgHXM2zLKWk/giphy.gif" alt="Cute" class="img-valentine">
+    
+    <h1 id="pregunta">¿Quieres ser mi San Valentín? 🌹</h1>
+
+    <div class="container">
+        <button id="btn-si">¡SÍ!</button>
+        <button id="btn-no">No</button>
+    </div>
+
+    <script>
+        const btnSi = document.getElementById('btn-si');
+        const btnNo = document.getElementById('btn-no');
+        const pregunta = document.getElementById('pregunta');
+        let fontSize = 1.2;
+
+        // Lógica para el botón "No"
+        const huir = () => {
+            // Mover a posición aleatoria
+            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
+            
+            btnNo.style.left = `${x}px`;
+            btnNo.style.top = `${y}px`;
+
+            // Hacer crecer el botón "SÍ"
+            fontSize += 0.5;
+            btnSi.style.fontSize = `${fontSize}rem`;
+            btnSi.style.padding = `${15 + (fontSize * 2)}px ${30 + (fontSize * 5)}px`;
+        };
+
+        // Eventos para móvil y PC
+        btnNo.addEventListener('mouseenter', huir);
+        btnNo.addEventListener('click', huir); // Por si logran darle tap en móvil
+
+        // Acción al decir que sí
+        btnSi.addEventListener('click', () => {
+            pregunta.innerHTML = "¡Sabía que dirías que sí! ❤️🥰";
+            btnNo.style.display = 'none';
+            btnSi.style.fontSize = '2rem';
+            document.body.style.backgroundColor = '#ffcad4';
+        });
+    </script>
+</body>
+</html>
