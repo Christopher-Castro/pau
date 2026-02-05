@@ -2,89 +2,171 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Quieres ser mi San Valentín? ❤️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Una pregunta importante... ❤️</title>
     <style>
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh; /* Asegura que ocupe toda la pantalla en móvil */
             margin: 0;
-            background-color: #ffeef2;
+            background-color: #ffeef2; /* Color de fondo inicial */
             font-family: 'Arial', sans-serif;
             text-align: center;
-            overflow: hidden;
+            overflow: hidden; /* Evita barras de desplazamiento cuando el botón se mueve */
+            transition: background-color 0.5s ease;
         }
 
-        h1 { color: #d63384; font-size: 2rem; }
+        h1 { 
+            color: #d63384; 
+            font-size: 1.8rem; 
+            margin: 20px 10px;
+            padding: 0 10px;
+        }
 
-        .container { position: relative; width: 100%; max-width: 400px; height: 300px; }
+        /* Contenedor para las imágenes */
+        .image-container {
+            width: 90%;
+            max-width: 300px;
+            height: 250px; /* Altura fija para evitar saltos feos al cambiar imagen */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .img-valentine { 
+            max-width: 100%; 
+            max-height: 100%; 
+            object-fit: contain; /* Asegura que la imagen se vea completa sin estirarse */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Contenedor de botones */
+        .buttons-container { 
+            position: relative; 
+            width: 100%; 
+            height: 200px; /* Espacio para que el botón NO se mueva */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            margin-top: 20px;
+        }
 
         button {
-            padding: 15px 30px;
+            padding: 12px 24px;
             font-size: 1.2rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px; /* Botones redonditos */
             cursor: pointer;
-            transition: all 0.2s ease;
-            margin: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        #btn-si { background-color: #ff4d6d; color: white; }
+        #btn-si { 
+            background-color: #ff4d6d; 
+            color: white; 
+            z-index: 10; /* Asegura que el SI siempre esté por encima */
+        }
+        
+        #btn-si:hover { background-color: #d63384; transform: scale(1.05); }
 
         #btn-no {
-            background-color: #6c757d;
-            color: white;
-            position: absolute;
+            background-color: #e9ecef;
+            color: #495057;
+            position: absolute; /* Clave para poder moverlo libremente */
         }
-
-        .img-valentine { width: 200px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ4ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6ZzB6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/26hpKzvgHXM2zLKWk/giphy.gif" alt="Cute" class="img-valentine">
+    <div class="image-container">
+        <img id="imagen-meme" src="" alt="Meme" class="img-valentine">
+    </div>
     
-    <h1 id="pregunta">¿Quieres ser mi San Valentín? 🌹</h1>
+    <h1 id="pregunta-txt">¿Quieres ser mi San Valentín? 🌹</h1>
 
-    <div class="container">
+    <div class="buttons-container">
         <button id="btn-si">¡SÍ!</button>
         <button id="btn-no">No</button>
     </div>
 
     <script>
+        // ===========================================================
+        //  ⬇️⬇️⬇️ ZONA DE CONFIGURACIÓN (Pega tus links aquí) ⬇️⬇️⬇️
+        // ===========================================================
+        
+        // 1. Imagen inicial (la de la pregunta, ojos de gato, etc.)
+        const LINK_IMAGEN_INICIAL = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmQwb296bmhiZDZ5bHE5d3Rza2MwNmtjaWJmdWd6djdxZGY5NDd4eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/901mxGLGQN2PyCQpoc/giphy.gif"; 
+
+        // 2. Imagen final (la de celebración cuando dice que SÍ)
+        const LINK_IMAGEN_FINAL = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTMzODhvcGY3eDZyZDJoaXV6YjYxNDZkc3pudjF6YTNkZmNpYnJlYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/T70hpBP1L0N7U0jtkq/giphy.gif";
+
+        // ===========================================================
+        //  ⬆️⬆️⬆️ FIN DE ZONA DE CONFIGURACIÓN ⬆️⬆️⬆️
+        // ===========================================================
+
+
+        // Referencias a los elementos
         const btnSi = document.getElementById('btn-si');
         const btnNo = document.getElementById('btn-no');
-        const pregunta = document.getElementById('pregunta');
-        let fontSize = 1.2;
+        const preguntaTxt = document.getElementById('pregunta-txt');
+        const memeImage = document.getElementById('imagen-meme');
+        let fontSizeSi = 1.2;
+        let paddingSizeSi = 12;
 
-        // Lógica para el botón "No"
+        // Cargar imagen inicial al arrancar
+        memeImage.src = LINK_IMAGEN_INICIAL;
+
+        // Lógica para el botón "No" (Huir)
         const huir = () => {
-            // Mover a posición aleatoria
-            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
+            // Mover el botón No a una posición aleatoria dentro de la pantalla visible
+            const containerRect = document.querySelector('.buttons-container').getBoundingClientRect();
+            const maxX = window.innerWidth - btnNo.offsetWidth - 20;
+            const maxY = window.innerHeight - btnNo.offsetHeight - 20;
+
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
             
+            // Usamos 'fixed' para que se mueva por toda la pantalla libremente
+            btnNo.style.position = 'fixed'; 
             btnNo.style.left = `${x}px`;
             btnNo.style.top = `${y}px`;
 
-            // Hacer crecer el botón "SÍ"
-            fontSize += 0.5;
-            btnSi.style.fontSize = `${fontSize}rem`;
-            btnSi.style.padding = `${15 + (fontSize * 2)}px ${30 + (fontSize * 5)}px`;
+            // Hacer crecer el botón "SÍ" para ejercer presión psicológica
+            fontSizeSi += 0.2;
+            paddingSizeSi += 2;
+            btnSi.style.fontSize = `${fontSizeSi}rem`;
+            btnSi.style.padding = `${paddingSizeSi}px ${paddingSizeSi * 2}px`;
         };
 
-        // Eventos para móvil y PC
+        // Eventos para PC (mouse pasa por encima)
         btnNo.addEventListener('mouseenter', huir);
-        btnNo.addEventListener('click', huir); // Por si logran darle tap en móvil
+        // Eventos para Móvil (intenta tocar)
+        btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); huir(); }); 
+        btnNo.addEventListener('click', (e) => { e.preventDefault(); huir(); });
 
-        // Acción al decir que sí
+        // Lógica para el botón "SÍ" (Éxito)
         btnSi.addEventListener('click', () => {
-            pregunta.innerHTML = "¡Sabía que dirías que sí! ❤️🥰";
+            // 1. Cambiar el texto
+            preguntaTxt.innerHTML = "¡Lo sabía! ¡Te amo! ❤️🥰🎉";
+            
+            // 2. CAMBIAR LA IMAGEN (Aquí ocurre la magia)
+            memeImage.src = LINK_IMAGEN_FINAL;
+            
+            // 3. Esconder el botón No y el Si
             btnNo.style.display = 'none';
-            btnSi.style.fontSize = '2rem';
+            btnSi.style.display = 'none';
+
+            // 4. Cambiar el fondo a un color más festivo
             document.body.style.backgroundColor = '#ffcad4';
+
+            // 5. (Opcional) Lanzar confeti si quisieras añadir esa librería luego.
         });
     </script>
 </body>
